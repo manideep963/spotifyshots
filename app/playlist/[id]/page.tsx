@@ -35,9 +35,15 @@ export default function EnhancedPlaylistPage() {
     if (!id) return;
     const fetchPlaylist = async () => {
       try {
-        const res = await fetch(`/api/playlist/${id}`);
-        const data = await res.json();
-        const tracks: Track[] = data.tracks.map((t: any) => ({
+        const res = await fetch(`/api/playlist/${id}`);        const data = await res.json();
+        const tracks: Track[] = data.tracks.map((t: {
+          _id: string;
+          name: string;
+          previewUrl: string | null;
+          durationMs: number;
+          artists: { name?: string }[] | string[];
+          spotifyId?: string;
+        }) => ({
           id: t._id,
           name: t.name,
           previewUrl: t.previewUrl,
@@ -96,17 +102,19 @@ const playPreview = (url: string | null) => {
 
   // Load and play the new song
   audio.src = url;
-  audio.load();
-  audio.play().catch((err) => {
+  audio.load();  audio.play().catch((err) => {
     console.error("Audio playback error:", err);
     setIsLoading(false);
   });
-};
-
+  };
 
   const toggleLike = (trackId: string) => {
     const next = new Set(likedTracks);
-    next.has(trackId) ? next.delete(trackId) : next.add(trackId);
+    if (next.has(trackId)) {
+      next.delete(trackId);
+    } else {
+      next.add(trackId);
+    }
     setLikedTracks(next);
   };
 
