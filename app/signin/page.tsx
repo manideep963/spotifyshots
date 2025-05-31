@@ -2,8 +2,16 @@
 import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
+type Provider = {
+  id: string;
+  name: string;
+  type: string;
+  signinUrl: string;
+  callbackUrl: string;
+};
+
 export default function SignInPage() {
-  const [providers, setProviders] = useState<any>(null);
+  const [providers, setProviders] = useState<Record<string, Provider> | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +25,7 @@ export default function SignInPage() {
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-6">Sign In</h1>
 
-      {Object.values(providers).map((provider: any) => {
+      {Object.values(providers).map((provider: Provider) => {
         if (provider.id === "credentials") {
           return (
             <form

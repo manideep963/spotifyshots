@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Play, Heart, MoreHorizontal, Calendar } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Image from 'next/image';
 
 type Playlist = {
   _id: string;
@@ -48,22 +49,27 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [playlistsRes, albumsRes] = await Promise.all([
-        fetch('/api/playlist'),
-        fetch('/api/albums'),
-      ]);
+    const loadData = async () => {
+      try {
+        const [playlistsRes, albumsRes] = await Promise.all([
+          fetch('/api/playlist'),
+          fetch('/api/albums'),
+        ]);
 
-      const [playlistsData, albumsData] = await Promise.all([
-        playlistsRes.json(),
-        albumsRes.json(),
-      ]);
+        const [playlistsData, albumsData] = await Promise.all([
+          playlistsRes.json(),
+          albumsRes.json(),
+        ]);
 
-      setPlaylists(playlistsData);
-      setAlbums(albumsData);
+        setPlaylists(playlistsData);
+        setAlbums(albumsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
 
-    fetchData();
+    loadData().catch(console.error);
+
   }, []);
 
   return (
@@ -74,7 +80,7 @@ export default function HomePage() {
         <h1 className="text-4xl font-black bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
           {getTimeOfDayGreeting()}
         </h1>
-        <p className="text-gray-400 text-lg">Let’s find something amazing to listen to</p>
+        <p className="text-gray-400 text-lg">Let&apos;s find something amazing to listen to</p>
       </header>
 
      
@@ -154,9 +160,11 @@ function Card({
     >
       <div className="bg-gray-800/40 p-4 rounded-xl hover:bg-gray-700/60 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
         <div className="relative mb-4">
-          <img
+          <Image
             src={imageUrl}
             alt={name}
+            width={300}
+            height={300}
             className="w-full aspect-square object-cover rounded-lg shadow-lg"
           />
           <div

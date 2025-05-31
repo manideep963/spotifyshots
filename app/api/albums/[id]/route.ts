@@ -22,7 +22,7 @@ export async function GET(
       return NextResponse.json({ error: 'Album not found' }, { status: 404 })
     }
 
-    const trackIds = album.tracks.map((tid: any) =>
+    const trackIds = album.tracks.map((tid: string | mongoose.Types.ObjectId) =>
       typeof tid === 'string' ? new mongoose.Types.ObjectId(tid) : tid
     )
 

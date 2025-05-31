@@ -23,7 +23,7 @@ export async function GET(
     }
 
     // Convert track IDs to ObjectId if needed
-    const trackIds = playlist.tracks.map((tid: any) =>
+    const trackIds = playlist.tracks.map((tid: string | mongoose.Types.ObjectId) =>
       typeof tid === 'string' ? new mongoose.Types.ObjectId(tid) : tid
     )
 

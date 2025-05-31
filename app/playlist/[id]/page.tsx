@@ -32,12 +32,19 @@ export default function EnhancedPlaylistPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (!id) return;
-    const fetchPlaylist = async () => {
+    const loadPlaylist = async () => {
+      if (!id) return;
       try {
         const res = await fetch(`/api/playlist/${id}`);
         const data = await res.json();
-        const tracks: Track[] = data.tracks.map((t: any) => ({
+        const tracks: Track[] = data.tracks.map((t: {
+          _id: string;
+          name: string;
+          previewUrl: string | null;
+          durationMs: number;
+          artists: { name?: string }[] | string[];
+          spotifyId?: string;
+        }) => ({
           id: t._id,
           name: t.name,
           previewUrl: t.previewUrl,
@@ -56,7 +63,9 @@ export default function EnhancedPlaylistPage() {
         console.error(err);
       }
     };
-    fetchPlaylist();
+
+    loadPlaylist().catch(console.error);
+
   }, [id]);
 
   useEffect(() => {
@@ -97,7 +106,7 @@ const playPreview = (url: string | null) => {
   // Load and play the new song
   audio.src = url;
   audio.load();
-  audio.play().catch((err) => {
+  void audio.play().catch((err) => {
     console.error("Audio playback error:", err);
     setIsLoading(false);
   });

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { Play, Pause, ExternalLink } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Image from 'next/image';
 
 type Track = {
   _id: string;
@@ -100,7 +101,13 @@ export default function EnhancedAlbumPage() {
     <Navbar/>
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">
       <div className="flex space-x-6 mb-8">
-        <img src={album.imageUrl} alt={album.name} className="w-60 h-60 rounded-lg shadow-lg" />
+        <Image 
+          src={album.imageUrl} 
+          alt={album.name} 
+          width={240}
+          height={240}
+          className="rounded-lg shadow-lg" 
+        />
         <div>
           <p className="uppercase text-sm text-white/60">{album.albumType}</p>
           <h1 className="text-4xl font-bold mb-2">{album.name}</h1>
@@ -112,7 +119,7 @@ export default function EnhancedAlbumPage() {
       </div>
 
       <div className="space-y-4">
-        {album.tracks.map((track, index) => {
+        {album.tracks.map((track) => {
           const isCurrent = playingUrl === track.previewUrl;
           return (
             <div
