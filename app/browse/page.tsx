@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Play, Heart, MoreHorizontal, Calendar } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import Image from 'next/image';
 
 type Playlist = {
   _id: string;
@@ -41,35 +41,33 @@ export default function HomePage() {
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
-
   const toggleLike = (id: string) => {
     const newLiked = new Set(likedItems);
-    newLiked.has(id) ? newLiked.delete(id) : newLiked.add(id);
+    if (newLiked.has(id)) {
+      newLiked.delete(id);
+    } else {
+      newLiked.add(id);
+    }
     setLikedItems(newLiked);
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [playlistsRes, albumsRes] = await Promise.all([
-          fetch('/api/playlist'),
-          fetch('/api/albums'),
-        ]);
+    const fetchData = async () => {
+      const [playlistsRes, albumsRes] = await Promise.all([
+        fetch('/api/playlist'),
+        fetch('/api/albums'),
+      ]);
 
-        const [playlistsData, albumsData] = await Promise.all([
-          playlistsRes.json(),
-          albumsRes.json(),
-        ]);
+      const [playlistsData, albumsData] = await Promise.all([
+        playlistsRes.json(),
+        albumsRes.json(),
+      ]);
 
-        setPlaylists(playlistsData);
-        setAlbums(albumsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      setPlaylists(playlistsData);
+      setAlbums(albumsData);
     };
 
-    loadData().catch(console.error);
-
+    fetchData();
   }, []);
 
   return (
@@ -80,7 +78,7 @@ export default function HomePage() {
         <h1 className="text-4xl font-black bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
           {getTimeOfDayGreeting()}
         </h1>
-        <p className="text-gray-400 text-lg">Let&apos;s find something amazing to listen to</p>
+        <p className="text-gray-400 text-lg">Let’s find something amazing to listen to</p>
       </header>
 
      
@@ -159,20 +157,22 @@ function Card({
       onMouseLeave={() => setHoveredItem(null)}
     >
       <div className="bg-gray-800/40 p-4 rounded-xl hover:bg-gray-700/60 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-        <div className="relative mb-4">
-          <Image
+        <div className="relative mb-4">          <Image
             src={imageUrl}
             alt={name}
-            width={300}
-            height={300}
+            width={200}
+            height={200}
             className="w-full aspect-square object-cover rounded-lg shadow-lg"
           />
           <div
             className={`absolute bottom-2 right-2 transition-all duration-300 ${
               isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-            }`}
-          >
-            <button className="bg-green-500 text-black p-3 rounded-full hover:bg-green-400 hover:scale-110 transition">
+            }`}          >
+            <button 
+              className="bg-green-500 text-black p-3 rounded-full hover:bg-green-400 hover:scale-110 transition"
+              aria-label="Play"
+              title="Play"
+            >
               <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
             </button>
           </div>
@@ -195,8 +195,7 @@ function Card({
           className={`flex items-center justify-between mt-4 transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
-        >
-          <button
+        >          <button
             onClick={(e) => {
               e.stopPropagation();
               onLike();
@@ -204,10 +203,15 @@ function Card({
             className={`p-2 rounded-full ${
               isLiked ? 'text-green-400 hover:text-green-300' : 'text-gray-400 hover:text-white'
             }`}
-          >
-            <Heart className="w-4 h-4" fill={isLiked ? 'currentColor' : 'none'} />
+            aria-label={isLiked ? 'Unlike' : 'Like'}
+            title={isLiked ? 'Unlike' : 'Like'}
+          ><Heart className="w-4 h-4" fill={isLiked ? 'currentColor' : 'none'} />
           </button>
-          <button className="text-gray-400 hover:text-white p-2 rounded-full">
+          <button 
+            className="text-gray-400 hover:text-white p-2 rounded-full"
+            aria-label="More options"
+            title="More options"
+          >
             <MoreHorizontal className="w-4 h-4" />
           </button>
         </div>
@@ -225,8 +229,11 @@ function Section({ title, children }: SectionProps) {
   return (
     <section className="px-8 mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold">{title}</h2>
-        <button className="text-sm text-gray-400 hover:text-white font-medium hover:underline">
+        <h2 className="text-3xl font-bold">{title}</h2>        <button 
+          className="text-sm text-gray-400 hover:text-white font-medium hover:underline"
+          aria-label={`Show all ${title.toLowerCase()}`}
+          title={`Show all ${title.toLowerCase()}`}
+        >
           Show all
         </button>
       </div>

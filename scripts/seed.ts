@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { connectDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/mongodb';
 import Album from '@/models/Album';
 
 const seedAlbums = [
@@ -25,7 +25,7 @@ const seedAlbums = [
 ];
 
 async function seed() {
-  await connectDB();
+  await connectToDB();
   await Album.deleteMany();
   await Album.insertMany(seedAlbums);
   console.log('Albums Seeded');

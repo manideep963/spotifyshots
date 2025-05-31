@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import { Play, Pause, ExternalLink } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import Image from 'next/image';
 
 type Track = {
   _id: string;
@@ -99,15 +99,8 @@ export default function EnhancedAlbumPage() {
   return (
     <>
     <Navbar/>
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">
-      <div className="flex space-x-6 mb-8">
-        <Image 
-          src={album.imageUrl} 
-          alt={album.name} 
-          width={240}
-          height={240}
-          className="rounded-lg shadow-lg" 
-        />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">      <div className="flex space-x-6 mb-8">
+        <Image src={album.imageUrl} alt={album.name} width={240} height={240} className="rounded-lg shadow-lg" />
         <div>
           <p className="uppercase text-sm text-white/60">{album.albumType}</p>
           <h1 className="text-4xl font-bold mb-2">{album.name}</h1>
@@ -116,9 +109,7 @@ export default function EnhancedAlbumPage() {
             {album.releaseDate} • {album.totalTracks} track{album.totalTracks > 1 ? 's' : ''}
           </p>
         </div>
-      </div>
-
-      <div className="space-y-4">
+      </div>      <div className="space-y-4">
         {album.tracks.map((track) => {
           const isCurrent = playingUrl === track.previewUrl;
           return (
@@ -144,14 +135,13 @@ export default function EnhancedAlbumPage() {
                   <p className="font-medium">{track.name}</p>
                   <p className="text-sm text-white/60">{formatDuration(track.durationMs)}</p>
                 </div>
-              </div>
-
-              {track.spotifyId && (
+              </div>              {track.spotifyId && (
                 <a
                   href={`https://open.spotify.com/track/${track.spotifyId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/60 hover:text-white"
+                  title="Open in Spotify"
                 >
                   <ExternalLink className="w-4 h-4" />
                 </a>

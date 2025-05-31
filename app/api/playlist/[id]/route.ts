@@ -7,10 +7,10 @@ import Track from '@/models/Track'
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params
+    const { id } = await context.params
     await connectToDB()
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -20,9 +20,7 @@ export async function GET(
     const playlist = await Playlist.findById(id)
     if (!playlist) {
       return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
-    }
-
-    // Convert track IDs to ObjectId if needed
+    }    // Convert track IDs to ObjectId if needed
     const trackIds = playlist.tracks.map((tid: string | mongoose.Types.ObjectId) =>
       typeof tid === 'string' ? new mongoose.Types.ObjectId(tid) : tid
     )
