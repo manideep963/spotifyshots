@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState , useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Play, Heart, MoreHorizontal, Calendar } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function HomePage() {
     setLikedItems(newLiked);
   };
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchData = async () => {
       const [playlistsRes, albumsRes] = await Promise.all([
         fetch('/api/playlist'),

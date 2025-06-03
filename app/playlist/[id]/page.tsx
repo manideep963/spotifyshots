@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 
 import TrackItem from "@/components/TrackItem";
@@ -31,7 +31,7 @@ export default function EnhancedPlaylistPage() {
   const [likedTracks, setLikedTracks] = useState<Set<string>>(new Set());
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
+  useMemo(() => {
     if (!id) return;
     const fetchPlaylist = async () => {
       try {
@@ -65,7 +65,7 @@ export default function EnhancedPlaylistPage() {
     fetchPlaylist();
   }, [id]);
 
-  useEffect(() => {
+  useMemo(() => {
     const audio = audioRef.current;
     if (!audio) return;
     const onLoadedData = () => setIsLoading(false);

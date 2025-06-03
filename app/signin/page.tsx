@@ -1,71 +1,80 @@
 "use client";
-import { getProviders, signIn, type ClientSafeProvider } from "next-auth/react";
-import { useEffect, useState } from "react";
+
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignInPage() {
-  const [providers, setProviders] = useState<Record<string, ClientSafeProvider> | null>(null);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  useEffect(() => {
-    getProviders().then(setProviders);
-  }, []);
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
 
-  if (!providers) return <div className="text-center mt-10">Loading...</div>;
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.ok) {
+      router.push("/browse");
+    } else {
+      setError("Invalid email or password");
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">Sign In</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-md">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-black">Sign In</h2>
+        {error && (
+          <div className="mb-4 rounded bg-red-100 p-2 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              className="mt-1 w-full rounded border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-      {Object.values(providers).map((provider: ClientSafeProvider) => {
-        if (provider.id === "credentials") {
-          return (
-            <form
-              key={provider.name}
-              className="flex flex-col gap-4 w-full max-w-sm mb-6"
-              onSubmit={(e) => {
-                e.preventDefault();
-                signIn("credentials", {
-                  username,
-                  password,
-                  redirect: true,
-                  callbackUrl: "/browse",
-                });
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="border p-2 rounded"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="border p-2 rounded"
-              />
-              <button type="submit" className="bg-black text-white p-2 rounded">
-                Sign in with Credentials
-              </button>
-            </form>
-          );
-        }
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              className="mt-1 w-full rounded border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        return (
           <button
-            key={provider.name}
-            onClick={() => signIn(provider.id)}
-            className="bg-gray-100 hover:bg-gray-200 text-black p-2 rounded w-full max-w-sm mb-2"
+            type="submit"
+            className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
           >
-            Sign in with {provider.name}
+            Sign In
           </button>
-        );
-      })}
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

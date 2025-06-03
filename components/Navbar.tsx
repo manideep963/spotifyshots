@@ -11,7 +11,7 @@ export default function Navbar() {
       </div>
       <div className="space-x-4">
         <Link href="/browse" className="hover:underline">Browse</Link>
-        <Link href="/playlist" className="hover:underline">Playlists</Link>
+        <Link href="/playlist" className="hover:underline">songs</Link>
         <Link href="/album" className="hover:underline">Albums</Link>
         <Link href="/" >
         <button
