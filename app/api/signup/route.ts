@@ -1,4 +1,3 @@
-// app/api/signup/route.ts
 import { hash } from "bcryptjs"
 import { connectToDB } from "@/lib/mongodb"
 import User from "@/models/User"
