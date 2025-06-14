@@ -1,5 +1,5 @@
 // app/api/albums/route.ts
-import { connectToDB } from "@/lib/db";
+import { connectToDB } from "@/lib/mongodb";
 import Track from "@/models/Track";
 import { NextResponse } from "next/server";
 

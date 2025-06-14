@@ -1,5 +1,5 @@
 // app/api/playlists/route.ts
-import { connectToDB } from "@/lib/db";
+import { connectToDB } from "@/lib/mongodb";
 import Playlist from "@/models/Playlist";
 import { NextResponse } from "next/server";
 

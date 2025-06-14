@@ -1,4 +1,3 @@
-// app/api/albums/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { connectToDB } from '@/lib/mongodb'
 import mongoose from 'mongoose'
